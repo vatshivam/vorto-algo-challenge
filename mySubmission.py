@@ -67,7 +67,7 @@ def print_solution(data, manager, routing, solution):
         if route_distance == 0:
             continue
         if len(nodes_output)>=1:
-            print("["+",".join(str(i) for i in nodes_output)+"]")
+            print(nodes_output)
             
 def find_solution(pickup_deliveries,dist_matrix,max_distance):
     

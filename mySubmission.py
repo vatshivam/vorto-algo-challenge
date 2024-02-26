@@ -2,7 +2,7 @@
 # evaluateShared encouters an error while parsing STDOUT
 # This is due the /r expression produced when splitting the STDOUT
 # Line number 78 in modified evaluateShared.py replaces /r with empty string and the tests run as expected
-
+import time
 import argparse
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
@@ -40,7 +40,7 @@ def create_data_model(pickup_deliveries,distance_matrix):
     # Setting demand for pickup locations equal to 2 and -2 for dropoffs.
     # This forces the driver to return to depot after every delivery as the vehicle capacity becomes 0 after a delivery is complete
     # Note: Value "2" could be replaced by an arbitrary number since the value doesn't have any significance
-    data["vehicle_capacities"] = [2]*len(pickup_deliveries)
+    data["vehicle_capacities"] = [2]*data['num_vehicles']
     data["demands"] = [0]+[2]*(len(pickup_deliveries))+[-2]*(len(pickup_deliveries))
     return data
 
@@ -136,7 +136,7 @@ def find_solution(pickup_deliveries,dist_matrix,max_distance):
     )
     
     distance_dimension = routing.GetDimensionOrDie(dimension_name)
-    distance_dimension.SetGlobalSpanCostCoefficient(1000)
+    distance_dimension.SetGlobalSpanCostCoefficient(100)
 
     # Define Transportation Requests.
     for request in data["pickups_deliveries"]:
@@ -172,6 +172,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("path", help="enter path to problem")
 args = parser.parse_args()
 path = args.path
+st = time.time()
 
 # Extract pickup and dropoff coordinates from txt file
 pickups,drops = extract_pickups_dropoffs(path)
@@ -189,3 +190,6 @@ pickup_deliveries = [[i,i+len(pickups)] for i in range(1,len(pickups)+1)]
 max_distance = 12*60 - 1
 
 find_solution(pickup_deliveries,dist_matrix,max_distance)
+
+et = time.time()
+print('Execution time:', round((et-st)*1000,2), 'milliseconds')

@@ -1,3 +1,8 @@
+# Even though this file produces final output as expected
+# evaluateShared encouters an error while parsing STDOUT
+# This is due the /r expression produced when splitting the STDOUT
+# Line number 78 in modified evaluateShared.py replaces /r with empty string and the tests run as expected
+
 import argparse
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
